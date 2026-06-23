@@ -4,25 +4,23 @@
       @if (campaign.brandId.logo) {
         <img [src]="campaign.brandId.logo" [alt]="campaign.brandId.brandName" class="brand-logo-image" />
       } @else {
-        {{ campaign.title.charAt(0) }}
+        {{ campaign.brandId.brandName.charAt(0) }}
       }
     </div>
 
     <div class="campaign-brand-info">
-      <p>
-        {{ campaign.platforms[0] }}
-      </p>
+      <h3>{{ campaign.brandId.brandName }}</h3>
+
+      <p>{{ campaign.platforms.join(', ') }}</p>
     </div>
 
-    <div class="campaign-category">
+    <ion-chip color="primary">
       {{ campaign.category | titlecase }}
-    </div>
+    </ion-chip>
   </div>
 
   <div class="campaign-body">
-    <h2>
-      {{ campaign.title }}
-    </h2>
+    <h2>{{ campaign.title }}</h2>
 
     <p class="campaign-description">
       {{ campaign.description }}
@@ -30,23 +28,42 @@
   </div>
 
   <div class="campaign-footer">
-    <div>
+    <div class="stat-item">
       <strong>Budget</strong>
+
       <p>
         {{ campaign.budgetPerInfluencer | currency: 'INR' }}
       </p>
     </div>
 
-    <div>
+    <div class="stat-item">
       <strong>Slots</strong>
+
       <p>{{ campaign.filledSlots }}/{{ campaign.totalSlots }}</p>
     </div>
 
-    <div>
+    <div class="stat-item">
       <strong>Status</strong>
-      <p>
+
+      <ion-chip
+        [color]="campaign.status === 'ACTIVE' ? 'success' : campaign.status === 'INACTIVE' ? 'danger' : 'warning'"
+      >
         {{ campaign.status | titlecase }}
+      </ion-chip>
+    </div>
+
+    <div class="stat-item">
+      <strong>Ends</strong>
+
+      <p>
+        {{ campaign.endDate | date: 'mediumDate' }}
       </p>
     </div>
   </div>
+
+  <ion-progress-bar
+    class="campaign-progress"
+    [value]="campaign.totalSlots ? campaign.filledSlots / campaign.totalSlots : 0"
+  >
+  </ion-progress-bar>
 </ion-card>

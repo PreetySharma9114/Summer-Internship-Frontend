@@ -1,22 +1,14 @@
-<ion-content class="ion-padding">
-  <div class="page-header">
-    <h1>My Campaigns</h1>
+<ion-content>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>My Campaigns</h1>
+      <p>Manage all your campaigns.</p>
+    </div>
 
-    <p>Manage your campaigns</p>
-  </div>
-
-  @if (loading) {
-    <ion-spinner name="crescent"></ion-spinner>
-  }
-
-  @if (!loading && campaigns.length === 0) {
-    <p>No campaigns created yet.</p>
-  }
-  
-
-  @if (!loading && campaigns.length > 0) {
     @for (campaign of campaigns; track campaign._id) {
-      <app-campaign-card [campaign]="campaign"> </app-campaign-card>
+      @if (campaign.title && campaign.description && campaign.category && campaign.platforms.length) {
+        <app-campaign-card [campaign]="campaign"> </app-campaign-card>
+      }
     }
-  }
+  </div>
 </ion-content>

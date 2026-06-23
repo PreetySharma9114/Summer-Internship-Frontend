@@ -1,9 +1,15 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { AuthService } from '../../../../core/services/auth.service';
-import { ProfileStatus } from '../../enums/profile-status.enum';
-import { CommonModule, TitleCasePipe } from '@angular/common';import { getValidationMessage } from '../../../../shared/helpers/validation-message.helper';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+
+import { CommonModule, TitleCasePipe } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { validateImageFile } from '../../../../shared/helpers/file-validation.helper';
+
+import { Router } from '@angular/router';
+
+import { finalize } from 'rxjs';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import {
   IonButton,
   IonContent,
@@ -15,19 +21,27 @@ import {
   IonSpinner,
 } from '@ionic/angular/standalone';
 
-import { Router } from '@angular/router';
-
-import { finalize } from 'rxjs';
-
-import { ToastService } from '../../../../core/services/toast.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 import { ProfileService } from '../../../../core/services/profile.service';
 
+import { ToastService } from '../../../../core/services/toast.service';
+
+import { ProfileStatus } from '../../enums/profile-status.enum';
+
 import { BrandIndustry } from '../../enums/brand-industry.enum';
+
 import { BrandProfile } from '../../interfaces/brand-profile.interface';
-import { generatePreview } from '../../../../shared/helpers/file-upload.helper';
+
 import { ProfileValidators } from '../../../../shared/validators/profile.validators';
+
+import { getValidationMessage } from '../../../../shared/helpers/validation-message.helper';
+
 import { getErrorMessage } from '../../../../shared/helpers/error-message.helper';
+
+import { generatePreview } from '../../../../shared/helpers/file-upload.helper';
+
+import { validateImageFile } from '../../../../shared/helpers/file-validation.helper';
 
 @Component({
   selector: 'app-brand-profile',
@@ -40,6 +54,7 @@ import { getErrorMessage } from '../../../../shared/helpers/error-message.helper
     CommonModule,
     ReactiveFormsModule,
     TitleCasePipe,
+
     IonContent,
     IonItem,
     IonInput,
@@ -56,9 +71,15 @@ export class BrandProfilePage implements OnInit {
   private profileService = inject(ProfileService);
 
   private toastService = inject(ToastService);
+
   private authService = inject(AuthService);
+
   private router = inject(Router);
+
+  private destroyRef = inject(DestroyRef);
+
   protected readonly getValidationMessage = getValidationMessage;
+
   brandProfileForm!: FormGroup;
 
   loading = false;
@@ -121,11 +142,14 @@ export class BrandProfilePage implements OnInit {
     }
 
     this.loading = true;
+
     const profile: BrandProfile = this.brandProfileForm.getRawValue();
 
     this.profileService
       .createBrandProfile(profile, this.selectedLogo ?? undefined)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
+
         finalize(() => {
           this.loading = false;
         }),

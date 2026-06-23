@@ -1,18 +1,9 @@
 import { CommonModule } from '@angular/common';
-
-import {
-  Component,
-  DestroyRef,
-  OnInit,
-  inject,
-} from '@angular/core';
-
-import {
-  IonContent,
-  IonSpinner,
-} from '@ionic/angular/standalone';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { IonContent } from '@ionic/angular/standalone';
 
 import { CampaignService } from '../../../../core/services/campaign.service';
 
@@ -24,12 +15,7 @@ import { CampaignCardComponent } from '../../../../shared/components/campaign-ca
   selector: 'app-my-campaigns',
   standalone: true,
   templateUrl: './my-campaigns.page.html',
-  imports: [
-    CommonModule,
-    IonContent,
-    IonSpinner,
-    CampaignCardComponent,
-  ],
+  imports: [CommonModule, IonContent,CampaignCardComponent],
 })
 export class MyCampaignsPage implements OnInit {
   private campaignService = inject(CampaignService);
@@ -41,24 +27,28 @@ export class MyCampaignsPage implements OnInit {
   loading = true;
 
   ngOnInit(): void {
+    this.listenToCampaignState();
+
     this.loadMyCampaigns();
   }
 
+  private listenToCampaignState(): void {
+    this.campaignService.myCampaigns$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((campaigns) => {
+        this.campaigns = campaigns;
+
+        this.loading = false;
+      });
+  }
+
   private loadMyCampaigns(): void {
+    this.loading = true;
+
     this.campaignService
       .getMyCampaigns()
-      .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
-          this.campaigns = response.data;
-
-          this.loading = false;
-        },
-
         error: () => {
           this.loading = false;
         },

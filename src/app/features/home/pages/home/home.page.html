@@ -1,121 +1,75 @@
-<ion-content>
-  <div class="page-container">
+<ion-content class="ion-padding">
+  @if (loading) {
+    <div class="ion-text-center ion-padding-top">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else {
+    @if (user) {
+      <div class="page-header ion-margin-bottom">
+        <h1>Welcome Back 👋</h1>
 
-    @if (loading) {
+        <p>{{ user.email }}</p>
 
-      <div class="loader-container">
-        <ion-spinner name="crescent"></ion-spinner>
+        <ion-chip color="primary">
+          {{ user.role }}
+        </ion-chip>
       </div>
 
-    } @else {
-
-      @if (user) {
-
+      @if (user.role === userRole.INFLUENCER) {
         <ion-card>
           <ion-card-header>
-            <ion-card-title>
-              Welcome
-            </ion-card-title>
+            <ion-card-title> Browse Campaigns </ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-            {{ user.email }}
+            <p>Discover campaigns from brands and apply for collaborations.</p>
+
+            <ion-button expand="block" class="ion-margin-top" (click)="goToCampaigns()"> Explore Campaigns </ion-button>
           </ion-card-content>
         </ion-card>
 
-        @if (user.role === userRole.INFLUENCER) {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title> My Applications </ion-card-title>
+          </ion-card-header>
 
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>
-                Browse Campaigns
-              </ion-card-title>
-            </ion-card-header>
+          <ion-card-content>
+            <p>Track all your submitted campaign applications.</p>
 
-            <ion-card-content>
-              Discover campaigns from brands.
-            </ion-card-content>
-
-            <ion-button
-              expand="block"
-              (click)="goToCampaigns()"
-            >
-              View Campaigns
-            </ion-button>
-          </ion-card>
-
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>
-                My Applications
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              Track all campaign applications.
-            </ion-card-content>
-
-            <ion-button
-              expand="block"
-              (click)="goToMyApplications()"
-            >
+            <ion-button expand="block" class="ion-margin-top" (click)="goToMyApplications()">
               View Applications
             </ion-button>
-          </ion-card>
+          </ion-card-content>
+        </ion-card>
+      } @else {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title> Create Campaign </ion-card-title>
+          </ion-card-header>
 
-        } @else {
+          <ion-card-content>
+            <p>Create campaigns and collaborate with influencers.</p>
 
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>
-                Create Campaign
-              </ion-card-title>
-            </ion-card-header>
-
-            <ion-card-content>
-              Create a new campaign for influencers.
-            </ion-card-content>
-
-            <ion-button
-              expand="block"
-              (click)="goToCreateCampaign()"
-            >
+            <ion-button expand="block" class="ion-margin-top" (click)="goToCreateCampaign()">
               Create Campaign
             </ion-button>
-          </ion-card>
+          </ion-card-content>
+        </ion-card>
 
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>
-                My Campaigns
-              </ion-card-title>
-            </ion-card-header>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title> My Campaigns </ion-card-title>
+          </ion-card-header>
 
-            <ion-card-content>
-              Manage your existing campaigns.
-            </ion-card-content>
+          <ion-card-content>
+            <p>View and manage all campaigns created by you.</p>
 
-            <ion-button
-              expand="block"
-              (click)="goToMyCampaigns()"
-            >
-              View Campaigns
-            </ion-button>
-          </ion-card>
-
-        }
-
-        <ion-button
-          expand="block"
-          color="danger"
-          (click)="logout()"
-        >
-          Logout
-        </ion-button>
-
+            <ion-button expand="block" class="ion-margin-top" (click)="goToMyCampaigns()"> View Campaigns </ion-button>
+          </ion-card-content>
+        </ion-card>
       }
 
+      <ion-button expand="block" color="danger" class="ion-margin-top" (click)="logout()"> Logout </ion-button>
     }
-
-  </div>
+  }
 </ion-content>

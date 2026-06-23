@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
 import {
   IonContent,
   IonSpinner,
@@ -11,6 +10,7 @@ import {
   IonCardTitle,
   IonCardContent,
   IonButton,
+  IonChip,
 } from '@ionic/angular/standalone';
 
 import { AuthService } from '../../../../core/services/auth.service';
@@ -18,11 +18,10 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { User } from '../../../../shared/interfaces/user.interface';
 
 import { UserRole } from '../../../../shared/enums/user-role.enum';
+
 @Component({
   selector: 'app-home',
-
   standalone: true,
-
   templateUrl: './home.page.html',
 
   imports: [
@@ -34,6 +33,7 @@ import { UserRole } from '../../../../shared/enums/user-role.enum';
     IonCardTitle,
     IonCardContent,
     IonButton,
+    IonChip,
   ],
 })
 export class HomePage implements OnInit {
@@ -54,13 +54,11 @@ export class HomePage implements OnInit {
   }
 
   private listenToUserState(): void {
-    this.authService.currentUser$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((user) => {
-        this.user = user;
+    this.authService.currentUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((user) => {
+      this.user = user;
 
-        this.loading = false;
-      });
+      this.loading = false;
+    });
   }
 
   goToCampaigns(): void {

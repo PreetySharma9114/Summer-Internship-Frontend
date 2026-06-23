@@ -1,10 +1,15 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { AuthService } from '../../../../core/services/auth.service';
-import { ProfileStatus } from '../../enums/profile-status.enum';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-import { getValidationMessage } from '../../../../shared/helpers/validation-message.helper';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { InfluencerProfile } from '../../interfaces/influencer-profile.interface';
+
+import { Router } from '@angular/router';
+
+import { finalize } from 'rxjs';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import {
   IonButton,
   IonContent,
@@ -15,18 +20,28 @@ import {
   IonCheckbox,
 } from '@ionic/angular/standalone';
 
-import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
 
-import { finalize } from 'rxjs';
+import { ProfileService } from '../../../../core/services/profile.service';
 
 import { ToastService } from '../../../../core/services/toast.service';
 
-import { ProfileService } from '../../../../core/services/profile.service';
-import { getErrorMessage } from '../../../../shared/helpers/error-message.helper';
+import { ProfileStatus } from '../../enums/profile-status.enum';
+
 import { InfluencerNiche } from '../../enums/influencer-niche.enum';
-import { generatePreview } from '../../../../shared/helpers/file-upload.helper';
+
+import { InfluencerProfile } from '../../interfaces/influencer-profile.interface';
+
 import { ProfileValidators } from '../../../../shared/validators/profile.validators';
+
+import { getValidationMessage } from '../../../../shared/helpers/validation-message.helper';
+
+import { getErrorMessage } from '../../../../shared/helpers/error-message.helper';
+
+import { generatePreview } from '../../../../shared/helpers/file-upload.helper';
+
 import { validateImageFile } from '../../../../shared/helpers/file-validation.helper';
+
 @Component({
   selector: 'app-influencer-profile',
 
@@ -53,9 +68,15 @@ export class InfluencerProfilePage implements OnInit {
   private profileService = inject(ProfileService);
 
   private toastService = inject(ToastService);
-  protected readonly getValidationMessage = getValidationMessage;
+
   private router = inject(Router);
+
   private authService = inject(AuthService);
+
+  private destroyRef = inject(DestroyRef);
+
+  protected readonly getValidationMessage = getValidationMessage;
+
   influencerProfileForm!: FormGroup;
 
   loading = false;
@@ -91,12 +112,27 @@ export class InfluencerProfilePage implements OnInit {
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
 
-    if (input.files && input.files.length > 0) {
-      this.selectedImage = input.files[0];
-      generatePreview(this.selectedImage, (preview: string) => {
-        this.imagePreview = preview;
-      });
+    if (!input.files?.length) {
+      return;
     }
+
+    const file = input.files[0];
+
+    const error = validateImageFile(file);
+
+    if (error) {
+      void this.toastService.showErrorToast(error);
+
+      input.value = '';
+
+      return;
+    }
+
+    this.selectedImage = file;
+
+    generatePreview(file, (preview: string) => {
+      this.imagePreview = preview;
+    });
   }
 
   submitProfile(): void {
@@ -107,11 +143,14 @@ export class InfluencerProfilePage implements OnInit {
     }
 
     this.loading = true;
+
     const profile: InfluencerProfile = this.influencerProfileForm.getRawValue();
 
     this.profileService
       .createInfluencerProfile(profile, this.selectedImage ?? undefined)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
+
         finalize(() => {
           this.loading = false;
         }),
@@ -138,37 +177,31 @@ export class InfluencerProfilePage implements OnInit {
           );
         },
       });
-      
   }
+
   isNicheSelected(niche: InfluencerNiche): boolean {
-  const selectedNiches =
-    this.influencerProfileForm.get('niches')?.value ?? [];
+    const selectedNiches = this.influencerProfileForm.get('niches')?.value ?? [];
 
-  return selectedNiches.includes(niche);
-}
-toggleNiche(
-  niche: InfluencerNiche,
-  checked: boolean,
-): void {
-  const control =
-    this.influencerProfileForm.get('niches');
-
-  const selectedNiches: InfluencerNiche[] = [
-    ...(control?.value ?? []),
-  ];
-
-  if (checked) {
-    selectedNiches.push(niche);
-  } else {
-    const index =
-      selectedNiches.indexOf(niche);
-
-    if (index > -1) {
-      selectedNiches.splice(index, 1);
-    }
+    return selectedNiches.includes(niche);
   }
 
-  control?.setValue(selectedNiches);
-  control?.markAsTouched();
-}
+  toggleNiche(niche: InfluencerNiche, checked: boolean): void {
+    const control = this.influencerProfileForm.get('niches');
+
+    const selectedNiches: InfluencerNiche[] = [...(control?.value ?? [])];
+
+    if (checked) {
+      selectedNiches.push(niche);
+    } else {
+      const index = selectedNiches.indexOf(niche);
+
+      if (index > -1) {
+        selectedNiches.splice(index, 1);
+      }
+    }
+
+    control?.setValue(selectedNiches);
+
+    control?.markAsTouched();
+  }
 }

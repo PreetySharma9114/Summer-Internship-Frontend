@@ -13,8 +13,14 @@ export class CampaignService {
   private readonly apiUrl = `${environment.apiUrl}/campaigns`;
 
   private campaignsSubject = new BehaviorSubject<Campaign[]>([]);
-
   campaigns$ = this.campaignsSubject.asObservable();
+  private myCampaignsSubject = new BehaviorSubject<Campaign[]>([]);
+
+  myCampaigns$ = this.myCampaignsSubject.asObservable();
+
+  private selectedCampaignSubject = new BehaviorSubject<Campaign | null>(null);
+
+  selectedCampaign$ = this.selectedCampaignSubject.asObservable();
 
   getCampaigns(): Observable<{
     success: boolean;
@@ -38,11 +44,17 @@ export class CampaignService {
     message: string;
     data: Campaign;
   }> {
-    return this.http.get<{
-      success: boolean;
-      message: string;
-      data: Campaign;
-    }>(`${this.apiUrl}/${id}`);
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: Campaign;
+      }>(`${this.apiUrl}/${id}`)
+      .pipe(
+        tap((response) => {
+          this.selectedCampaignSubject.next(response.data);
+        }),
+      );
   }
   createCampaign(data: CreateCampaignDto): Observable<{
     success: boolean;
@@ -54,14 +66,20 @@ export class CampaignService {
     }>(this.apiUrl, data);
   }
   getMyCampaigns(): Observable<{
-  success: boolean;
-  message: string;
-  data: Campaign[];
-}> {
-  return this.http.get<{
     success: boolean;
     message: string;
     data: Campaign[];
-  }>(`${this.apiUrl}/my`);
-}
+  }> {
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: Campaign[];
+      }>(`${this.apiUrl}/my`)
+      .pipe(
+        tap((response) => {
+          this.myCampaignsSubject.next(response.data);
+        }),
+      );
+  }
 }

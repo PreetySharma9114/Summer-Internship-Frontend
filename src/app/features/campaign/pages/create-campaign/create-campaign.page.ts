@@ -1,5 +1,5 @@
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -8,7 +8,7 @@ import { ToastService } from '../../../../core/services/toast.service';
 
 import { getErrorMessage } from '../../../../shared/helpers/error-message.helper';
 
-import { IonSpinner, IonCheckbox } from '@ionic/angular/standalone';
+import { IonSpinner } from '@ionic/angular/standalone';
 import {
   IonContent,
   IonItem,
@@ -26,30 +26,31 @@ import { CampaignService } from '../../../../core/services/campaign.service';
 import { Industry } from '../../../../shared/enums/industry.enum';
 import { Platform } from '../../../../shared/enums/platform.enum';
 import { CreateCampaignDto } from '../../dto/create-campaign.dto';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-create-campaign',
   standalone: true,
   templateUrl: './create-campaign.page.html',
   imports: [
-  CommonModule,
-  ReactiveFormsModule,
-  TitleCasePipe,
-  IonContent,
-  IonItem,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonButton,
-  IonDatetime,
-  IonDatetimeButton,
-  IonModal,
-  IonSpinner,
-  IonCheckbox,
-]
+    CommonModule,
+    ReactiveFormsModule,
+    TitleCasePipe,
+    IonContent,
+    IonItem,
+    IonInput,
+    IonTextarea,
+    IonSelect,
+    IonSelectOption,
+    IonButton,
+    IonDatetime,
+    IonDatetimeButton,
+    IonModal,
+    IonSpinner,
+  ],
 })
 export class CreateCampaignPage {
+  private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
 
   private campaignService = inject(CampaignService);
@@ -66,10 +67,10 @@ export class CreateCampaignPage {
     description: ['', Validators.required],
     category: ['', Validators.required],
     platforms: this.fb.control<Platform[]>([], Validators.required),
-    budgetPerInfluencer: [0, Validators.required],
-    totalSlots: [1, Validators.required],
-    startDate: [new Date().toISOString()],
-    endDate: [new Date().toISOString()],
+    budgetPerInfluencer: [0, [Validators.required, Validators.min(1)]],
+    totalSlots: [1, [Validators.required, Validators.min(1)]],
+    startDate: [new Date().toISOString(), Validators.required],
+    endDate: [new Date().toISOString(), Validators.required],
   });
 
   submit(): void {
@@ -86,6 +87,8 @@ export class CreateCampaignPage {
     this.campaignService
       .createCampaign(payload)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
+
         finalize(() => {
           this.loading = false;
         }),
@@ -103,30 +106,5 @@ export class CreateCampaignPage {
           );
         },
       });
-  }
-  isPlatformSelected(platform: Platform): boolean {
-    const selectedPlatforms = this.form.get('platforms')?.value ?? [];
-
-    return selectedPlatforms.includes(platform);
-  }
-
-  togglePlatform(platform: Platform, checked: boolean): void {
-    const control = this.form.get('platforms');
-
-    const selectedPlatforms: Platform[] = [...(control?.value ?? [])];
-
-    if (checked) {
-      selectedPlatforms.push(platform);
-    } else {
-      const index = selectedPlatforms.indexOf(platform);
-
-      if (index > -1) {
-        selectedPlatforms.splice(index, 1);
-      }
-    }
-
-    control?.setValue(selectedPlatforms);
-
-    control?.markAsTouched();
   }
 }

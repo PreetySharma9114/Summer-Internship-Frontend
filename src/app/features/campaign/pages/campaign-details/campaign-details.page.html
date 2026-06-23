@@ -1,98 +1,143 @@
-<ion-content class="ion-padding">
-  @if (loading) {
-    <ion-spinner name="crescent"></ion-spinner>
-  }
-
-  @if (!loading && campaign) {
-    <div class="page-header">
-      <h1>{{ campaign.title }}</h1>
-
-      <p>Campaign details and requirements</p>
-
-      <div class="campaign-category">
-        {{ campaign.category | titlecase }}
-      </div>
-    </div>
-
-    <div class="campaign-details-card">
-      <p class="campaign-description">
-        {{ campaign.description }}
-      </p>
-
-      <div class="details-row">
-        <strong>Budget</strong>
-
-        <span>
-          {{ campaign.budgetPerInfluencer | currency: 'INR' }}
-        </span>
+<ion-content fullscreen="true">
+  @if (campaign) {
+    <div class="page-container">
+      <div class="page-header">
+        <h1>{{ campaign!.title }}</h1>
+        <p>Campaign details and requirements</p>
       </div>
 
-      <div class="details-row">
-        <strong>Slots</strong>
+      <div class="campaign-details-card">
+        <!-- Top Section -->
 
-        <span> {{ campaign.filledSlots }}/{{ campaign.totalSlots }} </span>
-      </div>
+        <div class="campaign-top">
+          <div>
+            <h2>{{ campaign!.title }}</h2>
+            <p class="campaign-description">
+              {{ campaign!.description }}
+            </p>
+          </div>
 
-      <div class="details-row">
-        <strong>Status</strong>
+          <ion-chip
+            [color]="campaign!.status === 'ACTIVE' ? 'success' : campaign!.status === 'INACTIVE' ? 'danger' : 'warning'"
+          >
+            {{ campaign!.status | titlecase }}
+          </ion-chip>
+        </div>
 
-        <span> {{ campaign.status | titlecase }} </span>
-      </div>
+        <!-- Stats -->
 
-      <div class="details-row">
-        <strong>Platforms</strong>
+        <div class="campaign-stats">
+          <div class="stat-box">
+            <span>Budget</span>
 
-        <span>
-          {{ campaign.platforms.join(', ') }}
-        </span>
-      </div>
-    </div>
+            <strong>
+              {{ campaign!.budgetPerInfluencer | currency: 'INR' }}
+            </strong>
+          </div>
 
-    @if (user?.role === 'INFLUENCER') {
-      <ion-button expand="block" color="primary" (click)="applyToCampaign()"> Apply Now </ion-button>
-    }
-  }
-  @if (user?.role === 'BRAND') {
-    <ion-button expand="block" color="secondary" (click)="viewApplications()"> View Applications </ion-button>
-  }
-  @if (applications.length > 0) {
-    <div class="page-header">
-      <h2>Applications</h2>
+          <div class="stat-box">
+            <span>Slots</span>
 
-      <p>Review influencer applications</p>
-    </div>
-    @for (application of applications; track application._id) {
-      <div class="campaign-card">
-        <p>
-          Applicant:
+            <strong> {{ campaign!.filledSlots }}/{{ campaign!.totalSlots }} </strong>
+          </div>
 
-          @if (typeof application.influencerId !== 'string') {
-            {{ application.influencerId.fullName || application.influencerId.brandName }}
+          <div class="stat-box">
+            <span>Category</span>
+
+            <strong>
+              {{ campaign!.category | titlecase }}
+            </strong>
+          </div>
+
+          <div class="stat-box">
+            <span>Ends On</span>
+
+            <strong>
+              {{ campaign!.endDate | date: 'mediumDate' }}
+            </strong>
+          </div>
+        </div>
+
+        <!-- Platforms -->
+
+        <div class="section-title">Platforms</div>
+
+        <div class="platform-list">
+          @for (platform of campaign!.platforms; track platform) {
+            <ion-chip color="primary">
+              {{ platform | titlecase }}
+            </ion-chip>
           }
-        </p>
-        <p>
-          Status:
-          {{ application.status | titlecase }}
-        </p>
+        </div>
 
-        @if (user?.role === 'BRAND' && application.status === applicationStatus.PENDING) {
-          <ion-button
-            size="small"
-            color="success"
-            (click)="updateApplicationStatus(application._id, applicationStatus.ACCEPTED)"
-          >
-            Accept
-          </ion-button>
+        <!-- Progress -->
 
-          <ion-button
-            size="small"
-            color="danger"
-            (click)="updateApplicationStatus(application._id, applicationStatus.REJECTED)"
-          >
-            Reject
+        <div class="section-title mt-24">Campaign Progress</div>
+
+        <ion-progress-bar [value]="campaign!.totalSlots ? campaign!.filledSlots / campaign!.totalSlots : 0">
+        </ion-progress-bar>
+
+        <p class="text-center mt-8">
+          {{ campaign!.filledSlots }}/{{ campaign!.totalSlots }}
+          slots filled
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+
+      <div class="text-center mt-24">
+        @if (isBrandOwner) {
+          <ion-button (click)="viewApplications()"> View Applications </ion-button>
+        } @else {
+          <ion-button [disabled]="applied" (click)="applyToCampaign()">
+            {{ applied ? 'Already Applied' : 'Apply Now' }}
           </ion-button>
         }
       </div>
-    }
+      @if (isBrandOwner && applications.length > 0) {
+        <div class="campaign-details-card mt-24">
+          <h3 class="mb-16">Applications</h3>
+
+          @for (application of applications; track application._id) {
+            <div class="application-row">
+              <div class="application-info">
+                <strong>
+                  {{ getApplicantName(application) }}
+                </strong>
+
+                <span
+                  class="application-status"
+                  [class.accepted]="application.status === applicationStatus.ACCEPTED"
+                  [class.rejected]="application.status === applicationStatus.REJECTED"
+                  [class.pending]="application.status === applicationStatus.PENDING"
+                >
+                  {{ application.status }}
+                </span>
+              </div>
+
+              @if (application.status === applicationStatus.PENDING) {
+                <div class="application-actions">
+                  <ion-button
+                    size="small"
+                    color="success"
+                    (click)="updateApplicationStatus(application._id, applicationStatus.ACCEPTED)"
+                  >
+                    Accept
+                  </ion-button>
+
+                  <ion-button
+                    size="small"
+                    color="danger"
+                    (click)="updateApplicationStatus(application._id, applicationStatus.REJECTED)"
+                  >
+                    Reject
+                  </ion-button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
   }
 </ion-content>

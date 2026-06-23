@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Application } from '../../shared/interfaces/application.interface';
 import { ApplicationStatus } from '../../shared/enums/application-status.enum';
 import { environment } from '../../../environments/environment';
@@ -14,6 +14,13 @@ export class ApplicationService {
 
   private apiUrl = `${environment.apiUrl}/applications`;
 
+  private campaignApplicationsSubject = new BehaviorSubject<Application[]>([]);
+
+  campaignApplications$ = this.campaignApplicationsSubject.asObservable();
+
+  private myApplicationsSubject = new BehaviorSubject<Application[]>([]);
+
+  myApplications$ = this.myApplicationsSubject.asObservable();
   applyToCampaign(campaignId: string): Observable<{
     success: boolean;
     message: string;
@@ -29,23 +36,34 @@ export class ApplicationService {
     message: string;
     data: Application[];
   }> {
-    return this.http.get<{
-      success: boolean;
-      message: string;
-      data: Application[];
-    }>(`${this.apiUrl}/my`);
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: Application[];
+      }>(`${this.apiUrl}/my`)
+      .pipe(
+        tap((response) => {
+          this.myApplicationsSubject.next(response.data);
+        }),
+      );
   }
-
   getCampaignApplications(campaignId: string): Observable<{
     success: boolean;
     message: string;
     data: Application[];
   }> {
-    return this.http.get<{
-      success: boolean;
-      message: string;
-      data: Application[];
-    }>(`${this.apiUrl}/campaigns/${campaignId}`);
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: Application[];
+      }>(`${this.apiUrl}/campaigns/${campaignId}`)
+      .pipe(
+        tap((response) => {
+          this.campaignApplicationsSubject.next(response.data);
+        }),
+      );
   }
 
   updateApplicationStatus(

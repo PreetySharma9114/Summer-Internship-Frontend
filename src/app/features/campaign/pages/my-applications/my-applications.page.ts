@@ -19,21 +19,32 @@ export class MyApplicationsPage implements OnInit {
   applications: Application[] = [];
 
   loading = true;
-
   ngOnInit(): void {
-    this.applicationService
-      .getMyApplications()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.applications = response.data;
+    this.listenToMyApplicationsState();
 
-          this.loading = false;
-        },
-
-        error: (error) => {
-          this.loading = false;
-        },
-      });
+    this.loadMyApplications();
   }
+ private listenToMyApplicationsState(): void {
+  this.applicationService.myApplications$
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe((applications) => {
+      this.applications = applications;
+    });
+}
+private loadMyApplications(): void {
+  this.loading = true;
+
+  this.applicationService
+    .getMyApplications()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: () => {
+        this.loading = false;
+      },
+
+      error: () => {
+        this.loading = false;
+      },
+    });
+}
 }
