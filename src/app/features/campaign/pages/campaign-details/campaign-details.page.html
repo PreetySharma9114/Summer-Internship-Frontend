@@ -2,7 +2,7 @@
   @if (campaign) {
     <div class="page-container">
       <div class="page-header">
-        <h1>{{ campaign!.title }}</h1>
+        <h1>{{ campaign.title }}</h1>
         <p>Campaign details and requirements</p>
       </div>
 
@@ -11,16 +11,16 @@
 
         <div class="campaign-top">
           <div>
-            <h2>{{ campaign!.title }}</h2>
+            <h2>{{ campaign.title }}</h2>
             <p class="campaign-description">
-              {{ campaign!.description }}
+              {{ campaign.description }}
             </p>
           </div>
 
           <ion-chip
-            [color]="campaign!.status === 'ACTIVE' ? 'success' : campaign!.status === 'INACTIVE' ? 'danger' : 'warning'"
+            [color]="campaign.status === 'ACTIVE' ? 'success' : campaign.status === 'INACTIVE' ? 'danger' : 'warning'"
           >
-            {{ campaign!.status | titlecase }}
+            {{ campaign.status | titlecase }}
           </ion-chip>
         </div>
 
@@ -31,21 +31,21 @@
             <span>Budget</span>
 
             <strong>
-              {{ campaign!.budgetPerInfluencer | currency: 'INR' }}
+              {{ campaign.budgetPerInfluencer | currency: 'INR' }}
             </strong>
           </div>
 
           <div class="stat-box">
             <span>Slots</span>
 
-            <strong> {{ campaign!.filledSlots }}/{{ campaign!.totalSlots }} </strong>
+            <strong> {{ campaign.filledSlots }}/{{ campaign.totalSlots }} </strong>
           </div>
 
           <div class="stat-box">
             <span>Category</span>
 
             <strong>
-              {{ campaign!.category | titlecase }}
+              {{ campaign.category | titlecase }}
             </strong>
           </div>
 
@@ -53,7 +53,7 @@
             <span>Ends On</span>
 
             <strong>
-              {{ campaign!.endDate | date: 'mediumDate' }}
+              {{ campaign.endDate | date: 'mediumDate' }}
             </strong>
           </div>
         </div>
@@ -63,7 +63,7 @@
         <div class="section-title">Platforms</div>
 
         <div class="platform-list">
-          @for (platform of campaign!.platforms; track platform) {
+          @for (platform of campaign.platforms; track platform) {
             <ion-chip color="primary">
               {{ platform | titlecase }}
             </ion-chip>
@@ -74,11 +74,11 @@
 
         <div class="section-title mt-24">Campaign Progress</div>
 
-        <ion-progress-bar [value]="campaign!.totalSlots ? campaign!.filledSlots / campaign!.totalSlots : 0">
+        <ion-progress-bar [value]="campaign.totalSlots ? campaign.filledSlots / campaign.totalSlots : 0">
         </ion-progress-bar>
 
         <p class="text-center mt-8">
-          {{ campaign!.filledSlots }}/{{ campaign!.totalSlots }}
+          {{ campaign.filledSlots }}/{{ campaign.totalSlots }}
           slots filled
         </p>
       </div>
@@ -101,10 +101,9 @@
           @for (application of applications; track application._id) {
             <div class="application-row">
               <div class="application-info">
-                <strong>
+                <strong class="clickable" (click)="viewInfluencer(application)">
                   {{ getApplicantName(application) }}
                 </strong>
-
                 <span
                   class="application-status"
                   [class.accepted]="application.status === applicationStatus.ACCEPTED"

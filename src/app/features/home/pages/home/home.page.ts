@@ -68,7 +68,9 @@ export class HomePage implements OnInit {
   goToMyApplications(): void {
     this.router.navigate(['/my-applications']);
   }
-
+  goToPortfolio(): void {
+  this.router.navigate(['/portfolio']);
+}
   goToCreateCampaign(): void {
     this.router.navigate(['/create-campaign']);
   }

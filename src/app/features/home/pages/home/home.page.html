@@ -18,39 +18,81 @@
       @if (user.role === userRole.INFLUENCER) {
         <ion-card>
           <ion-card-header>
-            <ion-card-title> Browse Campaigns </ion-card-title>
+            <ion-card-title>Browse Campaigns</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-            <p>Discover campaigns from brands and apply for collaborations.</p>
+            <p>
+              Discover campaigns from brands and apply for collaborations.
+            </p>
 
-            <ion-button expand="block" class="ion-margin-top" (click)="goToCampaigns()"> Explore Campaigns </ion-button>
+            <ion-button
+              expand="block"
+              class="ion-margin-top"
+              (click)="goToCampaigns()"
+            >
+              Explore Campaigns
+            </ion-button>
           </ion-card-content>
         </ion-card>
 
         <ion-card>
           <ion-card-header>
-            <ion-card-title> My Applications </ion-card-title>
+            <ion-card-title>My Applications</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-            <p>Track all your submitted campaign applications.</p>
+            <p>
+              Track all your submitted campaign applications.
+            </p>
 
-            <ion-button expand="block" class="ion-margin-top" (click)="goToMyApplications()">
+            <ion-button
+              expand="block"
+              class="ion-margin-top"
+              (click)="goToMyApplications()"
+            >
               View Applications
             </ion-button>
           </ion-card-content>
         </ion-card>
-      } @else {
+
         <ion-card>
           <ion-card-header>
-            <ion-card-title> Create Campaign </ion-card-title>
+            <ion-card-title>My Portfolio</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-            <p>Create campaigns and collaborate with influencers.</p>
+            <p>
+              Upload your best photos and videos to showcase your work to brands.
+            </p>
 
-            <ion-button expand="block" class="ion-margin-top" (click)="goToCreateCampaign()">
+            <ion-button
+              expand="block"
+              class="ion-margin-top"
+              (click)="goToPortfolio()"
+            >
+              Manage Portfolio
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+
+      } @else {
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Create Campaign</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p>
+              Create campaigns and collaborate with influencers.
+            </p>
+
+            <ion-button
+              expand="block"
+              class="ion-margin-top"
+              (click)="goToCreateCampaign()"
+            >
               Create Campaign
             </ion-button>
           </ion-card-content>
@@ -58,18 +100,36 @@
 
         <ion-card>
           <ion-card-header>
-            <ion-card-title> My Campaigns </ion-card-title>
+            <ion-card-title>My Campaigns</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-            <p>View and manage all campaigns created by you.</p>
+            <p>
+              View and manage all campaigns created by you.
+            </p>
 
-            <ion-button expand="block" class="ion-margin-top" (click)="goToMyCampaigns()"> View Campaigns </ion-button>
+            <ion-button
+              expand="block"
+              class="ion-margin-top"
+              (click)="goToMyCampaigns()"
+            >
+              View Campaigns
+            </ion-button>
           </ion-card-content>
         </ion-card>
+
       }
 
-      <ion-button expand="block" color="danger" class="ion-margin-top" (click)="logout()"> Logout </ion-button>
+      <!-- Logout -->
+
+      <ion-button
+        expand="block"
+        color="danger"
+        class="ion-margin-top"
+        (click)="logout()"
+      >
+        Logout
+      </ion-button>
     }
   }
 </ion-content>

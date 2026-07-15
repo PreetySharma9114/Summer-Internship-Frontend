@@ -465,10 +465,6 @@ input[type="file"] {
   margin-bottom: 16px;
 }
 
-/* ==========================================================
-   RESPONSIVE
-========================================================== */
-
 @media (max-width: 768px) {
   .profile-grid {
     grid-template-columns: 1fr;
@@ -582,4 +578,76 @@ input[type="file"] {
 
 .application-actions ion-button {
   margin: 0;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.portfolio-card {
+  overflow: hidden;
+}
+
+.portfolio-thumbnail {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.file-upload {
+  margin-top: 20px;
+}
+
+.file-upload input[type="file"] {
+  width: 100%;
+}
+
+.hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.hashtags span {
+  background: var(--ion-color-light);
+  color: var(--ion-color-dark);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.video-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: rgba(var(--ion-color-primary-rgb), 0.12);
+  color: var(--ion-color-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.portfolio-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.portfolio-actions ion-button {
+  flex: 1;
+  margin: 0;
+}
+.clickable {
+  color: var(--ion-color-primary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.clickable:hover {
+  text-decoration: underline;
 }

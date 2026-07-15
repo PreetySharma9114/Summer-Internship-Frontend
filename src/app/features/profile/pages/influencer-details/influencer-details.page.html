@@ -1,0 +1,90 @@
+<ion-content>
+  @if (loading) {
+    <div class="page-container text-center">
+      <ion-spinner></ion-spinner>
+    </div>
+  } @else if (profile) {
+    <div class="page-container">
+      <div class="campaign-details-card">
+        @if (profile.profileImage) {
+          <img [src]="profile.profileImage" class="profile-preview" />
+        }
+
+        <div class="text-center">
+          <h1>{{ profile.fullName }}</h1>
+
+          <p>@{{ profile.username }}</p>
+        </div>
+
+        <div class="mt-24">
+          <p>{{ profile.bio }}</p>
+        </div>
+
+        <div class="campaign-stats mt-24">
+          <div class="stat-box">
+            <span>Followers</span>
+            <strong>{{ profile.instagramFollowers }}</strong>
+          </div>
+
+          <div class="stat-box">
+            <span>Instagram</span>
+            <strong>{{ profile.instagramUsername || '-' }}</strong>
+          </div>
+
+          <div class="stat-box">
+            <span>YouTube</span>
+            <strong>{{ profile.youtubeUsername || '-' }}</strong>
+          </div>
+        </div>
+
+        <div class="mt-24">
+          <strong>Niches</strong>
+
+          <div class="platform-list">
+            @for (niche of profile.niches; track niche) {
+              <ion-chip color="primary">
+                {{ niche }}
+              </ion-chip>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="campaign-details-card">
+        <h2>Portfolio</h2>
+
+        @if (portfolio.length === 0) {
+          <p class="mt-16">No portfolio uploaded yet.</p>
+        } @else {
+          <div class="portfolio-grid">
+            @for (item of portfolio; track item._id) {
+              <div class="portfolio-card">
+                @if (item.mediaType === 'IMAGE') {
+                  <img class="portfolio-thumbnail" [src]="item.thumbnailUrl" [alt]="item.title" />
+                } @else {
+                  <img class="portfolio-thumbnail" [src]="item.thumbnailUrl" [alt]="item.title" />
+                }
+
+                <div class="campaign-body">
+                  <h3>{{ item.title }}</h3>
+
+                  <p>{{ item.description }}</p>
+
+                  <div class="hashtags">
+                    @for (tag of item.hashtags; track tag) {
+                      <span>#{{ tag }}</span>
+                    }
+                  </div>
+
+                  @if (item.mediaType === 'VIDEO') {
+                    <div class="video-badge">🎥 Video</div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</ion-content>

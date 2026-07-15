@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-
+import { Portfolio } from '../../shared/interfaces/portfolio.interface';
+import { map } from 'rxjs';
 import { InfluencerProfile } from '../../features/profile/interfaces/influencer-profile.interface';
 import { switchMap, tap } from 'rxjs';
 import { UploadService } from './upload.service';
@@ -69,5 +70,24 @@ export class ProfileService {
         this.influencerProfileSubject.next(response);
       }),
     );
+  }
+  getInfluencerProfile(profileId: string): Observable<InfluencerProfile> {
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: InfluencerProfile;
+      }>(`${this.apiUrl}/influencer/${profileId}`)
+      .pipe(map((response) => response.data));
+  }
+
+  getInfluencerPortfolio(profileId: string): Observable<Portfolio[]> {
+    return this.http
+      .get<{
+        success: boolean;
+        message: string;
+        data: Portfolio[];
+      }>(`${environment.apiUrl}/portfolio/profile/${profileId}`)
+      .pipe(map((response) => response.data));
   }
 }

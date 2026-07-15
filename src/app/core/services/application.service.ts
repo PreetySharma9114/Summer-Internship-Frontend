@@ -16,12 +16,16 @@ export class ApplicationService {
 
   private campaignApplicationsSubject = new BehaviorSubject<Application[]>([]);
 
-  campaignApplications$ = this.campaignApplicationsSubject.asObservable();
+  campaignApplications$ =
+    this.campaignApplicationsSubject.asObservable();
 
   private myApplicationsSubject = new BehaviorSubject<Application[]>([]);
 
   myApplications$ = this.myApplicationsSubject.asObservable();
-  applyToCampaign(campaignId: string): Observable<{
+
+  applyToCampaign(
+    campaignId: string,
+  ): Observable<{
     success: boolean;
     message: string;
   }> {
@@ -48,7 +52,10 @@ export class ApplicationService {
         }),
       );
   }
-  getCampaignApplications(campaignId: string): Observable<{
+
+  getCampaignApplications(
+    campaignId: string,
+  ): Observable<{
     success: boolean;
     message: string;
     data: Application[];
@@ -58,7 +65,7 @@ export class ApplicationService {
         success: boolean;
         message: string;
         data: Application[];
-      }>(`${this.apiUrl}/campaigns/${campaignId}`)
+      }>(`${this.apiUrl}/campaigns/${campaignId}/applications`)
       .pipe(
         tap((response) => {
           this.campaignApplicationsSubject.next(response.data);
@@ -76,6 +83,8 @@ export class ApplicationService {
     return this.http.patch<{
       success: boolean;
       message: string;
-    }>(`${this.apiUrl}/${applicationId}/status`, { status });
+    }>(`${this.apiUrl}/${applicationId}/status`, {
+      status,
+    });
   }
 }

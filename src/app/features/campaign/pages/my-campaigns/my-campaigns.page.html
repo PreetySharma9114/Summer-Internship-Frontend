@@ -6,9 +6,7 @@
     </div>
 
     @for (campaign of campaigns; track campaign._id) {
-      @if (campaign.title && campaign.description && campaign.category && campaign.platforms.length) {
-        <app-campaign-card [campaign]="campaign"> </app-campaign-card>
-      }
+      <app-campaign-card [campaign]="campaign"></app-campaign-card>
     }
   </div>
 </ion-content>

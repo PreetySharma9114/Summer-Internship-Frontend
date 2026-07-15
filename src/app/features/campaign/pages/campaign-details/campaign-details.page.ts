@@ -3,9 +3,7 @@ import { CommonModule, CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/co
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-import { ActivatedRoute } from '@angular/router';
-
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, IonButton, IonChip, IonProgressBar } from '@ionic/angular/standalone';
 
 import { AuthService } from '../../../../core/services/auth.service';
@@ -40,7 +38,7 @@ import { getErrorMessage } from '../../../../shared/helpers/error-message.helper
 })
 export class CampaignDetailsPage implements OnInit {
   private route = inject(ActivatedRoute);
-
+  private router = inject(Router);
   private authService = inject(AuthService);
 
   private campaignService = inject(CampaignService);
@@ -154,15 +152,21 @@ export class CampaignDetailsPage implements OnInit {
       });
   }
   getApplicantName(application: Application): string {
-  if (typeof application.influencerId === 'object') {
-    return (
-      application.influencerId.fullName ||
-      'Unknown Influencer'
-    );
-  }
+    if (typeof application.influencerId === 'object') {
+      return application.influencerId.fullName || 'Unknown Influencer';
+    }
 
-  return application.influencerId;
-}
+    return application.influencerId;
+  }
+  viewInfluencer(application: Application): void {
+    if (typeof application.influencerId === 'object') {
+      this.router.navigate(['/influencer', application.influencerId._id]);
+
+      return;
+    }
+
+    this.router.navigate(['/influencer', application.influencerId]);
+  }
 
   updateApplicationStatus(applicationId: string, status: ApplicationStatus): void {
     this.applicationService

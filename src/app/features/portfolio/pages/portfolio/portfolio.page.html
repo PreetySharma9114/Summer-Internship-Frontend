@@ -1,0 +1,96 @@
+<ion-content fullscreen="true">
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Portfolio</h1>
+      <p>Showcase your best work to brands.</p>
+    </div>
+
+    <!-- Upload Form -->
+
+    <ion-card class="campaign-details-card">
+      <h3>Add Portfolio Item</h3>
+
+      <form [formGroup]="form">
+        <div class="mt-16">
+          <ion-input label="Title" labelPlacement="stacked" formControlName="title"> </ion-input>
+        </div>
+
+        <div class="mt-16">
+          <ion-textarea label="Description" labelPlacement="stacked" formControlName="description"> </ion-textarea>
+        </div>
+
+        <div class="mt-16">
+          <ion-select label="Platform" labelPlacement="stacked" formControlName="platform">
+            <ion-select-option value="INSTAGRAM"> Instagram </ion-select-option>
+
+            <ion-select-option value="YOUTUBE"> YouTube </ion-select-option>
+
+            <ion-select-option value="FACEBOOK"> Facebook </ion-select-option>
+
+            <ion-select-option value="LINKEDIN"> LinkedIn </ion-select-option>
+
+            <ion-select-option value="TWITTER"> Twitter (X) </ion-select-option>
+
+            <ion-select-option value="OTHER"> Other </ion-select-option>
+          </ion-select>
+        </div>
+
+        <div class="mt-16">
+          <ion-input
+            label="Hashtags"
+            labelPlacement="stacked"
+            placeholder="fashion, travel, fitness"
+            formControlName="hashtags"
+          >
+          </ion-input>
+        </div>
+
+        <div class="file-upload mt-16">
+          <input type="file" accept="image/*,video/*" (change)="selectFile($event)" />
+        </div>
+
+        <ion-button expand="block" class="w-full" [disabled]="uploading" (click)="savePortfolio()">
+          {{ uploading ? 'Uploading...' : 'Save Portfolio' }}
+        </ion-button>
+      </form>
+    </ion-card>
+
+    <!-- Portfolio Grid -->
+
+    <div class="portfolio-grid">
+      @for (item of portfolios; track item._id) {
+        <ion-card class="portfolio-card">
+          <img class="portfolio-thumbnail" [src]="item.thumbnailFullUrl" [alt]="item.title" />
+
+          <ion-card-content>
+            <h3>{{ item.title }}</h3>
+
+            <p class="mt-8">
+              {{ item.description }}
+            </p>
+
+            <div class="mt-16">
+              <strong>{{ item.platform }}</strong>
+            </div>
+
+            @if (item.mediaType === 'VIDEO') {
+              <div class="video-badge">🎥 Video</div>
+            }
+
+            @if (item.hashtags.length) {
+              <div class="hashtags">
+                @for (tag of item.hashtags; track tag) {
+                  <span>#{{ tag }}</span>
+                }
+              </div>
+            }
+
+            <div class="portfolio-actions">
+              <ion-button color="danger" expand="block" (click)="deletePortfolio(item._id)"> Delete </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  </div>
+</ion-content>
