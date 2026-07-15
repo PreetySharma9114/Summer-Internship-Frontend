@@ -1,0 +1,81 @@
+<ion-content>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Create Instagram Post</h1>
+      <p>Upload an image or reel, generate AI captions, and publish to Instagram.</p>
+    </div>
+
+    <ion-card>
+      <ion-card-content>
+        <form [formGroup]="form">
+          <!-- Upload -->
+
+          <div class="upload-box">
+            <!-- Image Preview -->
+
+            <img *ngIf="previewUrl && !isVideo" [src]="previewUrl" class="portfolio-thumbnail" />
+
+            <video *ngIf="previewUrl && isVideo" [src]="previewUrl" controls class="portfolio-thumbnail"></video>
+
+            <!-- Empty State -->
+
+            <div *ngIf="!previewUrl" class="text-center">
+              <h3>No media selected</h3>
+
+              <p class="mt-8">Upload an image or reel to continue.</p>
+            </div>
+
+            <div class="file-upload">
+              <input type="file" accept="image/*,video/*" (change)="onFileSelected($event)" />
+            </div>
+          </div>
+
+          <!-- Caption -->
+
+          <div class="input-group">
+            <label>Caption</label>
+
+            <ion-textarea rows="6" placeholder="Write something..." formControlName="caption"> </ion-textarea>
+          </div>
+
+          <!-- Generate Caption -->
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            (click)="generateCaption()"
+            [disabled]="loadingCaption || !selectedFile"
+          >
+            <ion-spinner slot="start" *ngIf="loadingCaption"> </ion-spinner>
+
+            ✨ Generate AI Caption
+          </ion-button>
+
+          <!-- Generated Captions -->
+
+          <div class="mt-24" *ngIf="generatedCaptions.length">
+            <h3 class="mb-16">AI Suggested Captions</h3>
+
+            <ion-card
+              *ngFor="let caption of generatedCaptions"
+              class="campaign-card clickable"
+              (click)="selectCaption(caption)"
+            >
+              <ion-card-content>
+                <p>{{ caption }}</p>
+
+                <ion-button fill="clear" size="small" color="primary"> Use Caption </ion-button>
+              </ion-card-content>
+            </ion-card>
+          </div>
+
+          <!-- Publish -->
+
+          <ion-button expand="block" color="success" class="mt-24" (click)="publish()" [disabled]="!selectedFile">
+            Publish to Instagram
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

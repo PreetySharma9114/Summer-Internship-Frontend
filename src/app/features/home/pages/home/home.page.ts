@@ -82,4 +82,10 @@ export class HomePage implements OnInit {
   logout(): void {
     this.authService.logout();
   }
+  goToCreatorStudioPage(): void{
+    this.router.navigate(['/creator-studio']);
+  }
+  goToCreatePost():  void{
+    this.router.navigate(['/create-post']);
+  }
 }

@@ -651,3 +651,199 @@ input[type="file"] {
 .clickable:hover {
   text-decoration: underline;
 }
+
+/* ===========================
+   CREATOR STUDIO
+=========================== */
+
+.studio-card {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  margin-bottom: 20px;
+}
+
+.upload-area {
+  height: 320px;
+  border: 2px dashed var(--ion-border-color);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.upload-placeholder {
+  text-align: center;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.action-row ion-button {
+  margin: 0;
+}
+
+.post-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--ion-color-medium);
+}
+
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.instagram-card {
+  overflow: hidden;
+}
+
+.instagram-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+.caption-box {
+  margin-top: 20px;
+}
+
+.ai-button {
+  margin-right: 12px;
+}
+
+@media (max-width:768px) {
+
+  .upload-area {
+    height: 220px;
+  }
+
+  .action-row {
+    flex-direction: column;
+  }
+
+}
+.creator-upload {
+  height: 320px;
+  border: 2px dashed var(--ion-border-color);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.creator-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.creator-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.creator-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+}
+
+@media (max-width:768px) {
+  .creator-actions {
+    flex-direction: column;
+  }
+
+  .creator-upload {
+    height: 220px;
+  }
+}
+/* ===================================
+   CREATOR STUDIO
+=================================== */
+
+.creator-upload-card {
+
+  width: 100%;
+
+  height: 380px;
+
+  border: 2px dashed var(--ion-border-color);
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  background: #fafafa;
+
+  margin-bottom: 24px;
+
+}
+
+.creator-upload-content {
+
+  text-align: center;
+
+  cursor: pointer;
+
+}
+
+.upload-icon {
+
+  font-size: 72px;
+
+  margin-bottom: 16px;
+
+}
+
+.creator-upload-content h2 {
+
+  margin-bottom: 10px;
+
+}
+
+.creator-upload-content p {
+
+  margin-bottom: 24px;
+
+}
+
+.creator-preview {
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: contain;
+
+  background: black;
+
+}

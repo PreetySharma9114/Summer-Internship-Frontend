@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-
 import { authGuard } from './core/guards/auth.guard';
 import { profileGuard } from './core/guards/profile.guard';
 
@@ -120,7 +119,20 @@ export const routes: Routes = [
       },
     ],
   },
-
+  {
+    path: 'creator-studio',
+    loadComponent: () =>
+      import('./features/creator-studio/pages/creator-studio/creator-studio.page').then(
+        (m) => m.CreatorStudioPage,
+      ),
+  },
+  {
+    path: 'create-post',
+    loadComponent: () =>
+      import('./features/creator-studio/pages/create-post/create-post.page').then(
+        (m) => m.CreatePostPage,
+      ),
+  },
   {
     path: '**',
     redirectTo: 'login',
