@@ -10,7 +10,7 @@
       <form [formGroup]="influencerProfileForm" (ngSubmit)="submitProfile()">
         <div class="upload-box">
           @if (imagePreview) {
-            <img [src]="imagePreview" class="profile-preview" />
+          <img [src]="imagePreview" class="profile-preview" />
           }
 
           <input type="file" accept="image/*" (change)="onFileChange($event)" />
@@ -24,9 +24,9 @@
           </ion-item>
 
           @if (influencerProfileForm.get('fullName')?.invalid && influencerProfileForm.get('fullName')?.touched) {
-            <small>
-              {{ getValidationMessage(influencerProfileForm.get('fullName')) }}
-            </small>
+          <small>
+            {{ getValidationMessage(influencerProfileForm.get('fullName')) }}
+          </small>
           }
         </div>
 
@@ -38,9 +38,9 @@
           </ion-item>
 
           @if (influencerProfileForm.get('username')?.invalid && influencerProfileForm.get('username')?.touched) {
-            <small>
-              {{ getValidationMessage(influencerProfileForm.get('username')) }}
-            </small>
+          <small>
+            {{ getValidationMessage(influencerProfileForm.get('username')) }}
+          </small>
           }
         </div>
 
@@ -52,34 +52,58 @@
           </ion-item>
 
           @if (influencerProfileForm.get('bio')?.touched && influencerProfileForm.get('bio')?.invalid) {
-            <small>
-              {{ getValidationMessage(influencerProfileForm.get('bio')) }}
-            </small>
+          <small>
+            {{ getValidationMessage(influencerProfileForm.get('bio')) }}
+          </small>
           }
         </div>
         <div class="input-group">
           <label>Niches</label>
 
           @for (niche of niches; track niche) {
-            <ion-item lines="none">
-              <ion-checkbox [checked]="isNicheSelected(niche)" (ionChange)="toggleNiche(niche, $event.detail.checked)">
-              </ion-checkbox>
+          <ion-item lines="none">
+            <ion-checkbox [checked]="isNicheSelected(niche)" (ionChange)="toggleNiche(niche, $event.detail.checked)">
+            </ion-checkbox>
 
-              <span>{{ niche }}</span>
-            </ion-item>
+            <span>{{ niche }}</span>
+          </ion-item>
           }
 
           @if (influencerProfileForm.get('niches')?.invalid && influencerProfileForm.get('niches')?.touched) {
-            <small>Select at least one niche</small>
+          <small>Select at least one niche</small>
           }
         </div>
 
-        <div class="input-group">
+        <!-- <div class="input-group">
           <label>Instagram Username</label>
 
           <ion-item lines="none">
             <ion-input placeholder="Enter Instagram username" formControlName="instagramUsername"> </ion-input>
           </ion-item>
+        </div> -->
+
+        <div class="input-group">
+          <label>Instagram Account</label>
+
+          @if (!instagramConnected) {
+          <ion-button expand="block" fill="outline" color="primary" (click)="connectInstagram()">
+            Connect Instagram
+          </ion-button>
+
+          <small> Connect your Instagram Business or Creator account to automatically import your profile. </small>
+          } @else {
+          <ion-item lines="none">
+            <ion-input label="Username" labelPlacement="stacked" formControlName="instagramUsername" readonly>
+            </ion-input>
+          </ion-item>
+
+          <ion-item lines="none" class="mt-16">
+            <ion-input label="Followers" labelPlacement="stacked" formControlName="instagramFollowers" readonly>
+            </ion-input>
+          </ion-item>
+
+          <ion-button expand="block" color="success" disabled class="mt-16"> ✓ Instagram Connected </ion-button>
+          }
         </div>
 
         <div class="input-group">
@@ -90,7 +114,7 @@
           </ion-item>
         </div>
 
-        <div class="input-group">
+        <!-- <div class="input-group">
           <label>Followers Count</label>
 
           <ion-item lines="none">
@@ -106,13 +130,13 @@
               {{ getValidationMessage(influencerProfileForm.get('instagramFollowers')) }}
             </small>
           }
-        </div>
+        </div> -->
 
         <ion-button expand="block" type="submit" [disabled]="loading">
           @if (loading) {
-            <ion-spinner name="crescent"></ion-spinner>
+          <ion-spinner name="crescent"></ion-spinner>
           } @else {
-            Complete Profile
+          Complete Profile
           }
         </ion-button>
       </form>

@@ -40,13 +40,15 @@ export class SocialMediaService {
 
   exchangeCode(code: string) {
     return this.http.post<{
-      profile: {
-        id: string;
-        username: string;
-        followers: number;
-        mediaCount: number;
+      data: {
+        profile: {
+          id: string;
+          username: string;
+          followers: number;
+          mediaCount: number;
+        };
+        token: string;
       };
-      token: string;
     }>(`${this.apiUrl}/exchange`, { code });
   }
 }

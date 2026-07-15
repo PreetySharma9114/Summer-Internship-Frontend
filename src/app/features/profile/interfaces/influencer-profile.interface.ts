@@ -12,3 +12,17 @@ export interface InfluencerProfile {
   instagramFollowers: number;
   profileImage?: string;
 }
+
+export interface CreateInfluencerProfile {
+  fullName: string;
+  username: string;
+  bio: string;
+  niches: InfluencerNiche[];
+  instagramToken: string;
+  instagramUserId: string;
+  instagramUsername: string;
+  instagramFollowers: number;
+  youtubeUsername?: string;
+  youtubeFollowers?: number;
+  profileImage?: string;
+}

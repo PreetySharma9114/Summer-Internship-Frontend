@@ -7,7 +7,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Portfolio } from '../../shared/interfaces/portfolio.interface';
 import { map } from 'rxjs';
-import { InfluencerProfile } from '../../features/profile/interfaces/influencer-profile.interface';
+import {
+  CreateInfluencerProfile,
+  InfluencerProfile,
+} from '../../features/profile/interfaces/influencer-profile.interface';
 import { switchMap, tap } from 'rxjs';
 import { UploadService } from './upload.service';
 import { BrandProfile } from '../../features/profile/interfaces/brand-profile.interface';
@@ -50,7 +53,10 @@ export class ProfileService {
     );
   }
 
-  createInfluencerProfile(profile: InfluencerProfile, image?: File): Observable<InfluencerProfile> {
+  createInfluencerProfile(
+    profile: CreateInfluencerProfile,
+    image?: File,
+  ): Observable<InfluencerProfile> {
     if (!image) {
       return this.http.post<InfluencerProfile>(`${this.apiUrl}/influencer`, profile).pipe(
         tap((response) => {

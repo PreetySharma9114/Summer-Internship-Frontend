@@ -30,7 +30,10 @@ import { ProfileStatus } from '../../enums/profile-status.enum';
 
 import { InfluencerNiche } from '../../enums/influencer-niche.enum';
 
-import { InfluencerProfile } from '../../interfaces/influencer-profile.interface';
+import {
+  CreateInfluencerProfile,
+  InfluencerProfile,
+} from '../../interfaces/influencer-profile.interface';
 
 import { ProfileValidators } from '../../../../shared/validators/profile.validators';
 
@@ -53,7 +56,6 @@ import { SocialMediaService } from 'src/app/core/services/social-media.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-
     IonContent,
     IonItem,
     IonInput,
@@ -84,6 +86,8 @@ export class InfluencerProfilePage implements OnInit {
 
   influencerProfileForm!: FormGroup;
 
+  instagramConnected = false;
+
   loading = false;
 
   selectedImage: File | null = null;
@@ -94,6 +98,8 @@ export class InfluencerProfilePage implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+
+    this.handleInstagramCallback();
   }
 
   private initializeForm(): void {
@@ -108,11 +114,13 @@ export class InfluencerProfilePage implements OnInit {
 
       instagramToken: [{ value: '', disabled: true }, Validators.required],
 
+      instagramUserId: [{ value: '', disabled: true }, Validators.required],
+
       instagramUsername: [{ value: '', disabled: true }, Validators.required],
 
-      youtubeUsername: [''],
-
       instagramFollowers: [{ value: 0, disabled: true }, ProfileValidators.instagramFollowers],
+
+      youtubeUsername: [''],
     });
   }
 
@@ -151,7 +159,7 @@ export class InfluencerProfilePage implements OnInit {
 
     this.loading = true;
 
-    const profile: InfluencerProfile = this.influencerProfileForm.getRawValue();
+    const profile: CreateInfluencerProfile = this.influencerProfileForm.getRawValue();
 
     this.profileService
       .createInfluencerProfile(profile, this.selectedImage ?? undefined)
@@ -243,7 +251,7 @@ export class InfluencerProfilePage implements OnInit {
         .exchangeCode(code)
         .pipe(finalize(() => this.clearQueryParams()))
         .subscribe({
-          next: ({ profile, token }) => {
+          next: ({ data }) => {
             const draft = localStorage.getItem('profileFormDraft');
 
             if (draft) {
@@ -251,13 +259,13 @@ export class InfluencerProfilePage implements OnInit {
               localStorage.removeItem('profileFormDraft');
             }
 
+            this.instagramConnected = true;
+
             this.influencerProfileForm.patchValue({
-              instagram: {
-instagramFollowers: profile.followers,
-                instagramToken:token,
-                instagramUserId: profile.id,
-                username: profile.username,
-              },
+              instagramFollowers: data.profile.followers,
+              instagramToken: data.token,
+              instagramUserId: data.profile.id,
+              instagramUsername: data.profile.username,
             });
 
             sessionStorage.removeItem('ig_oauth_state');
