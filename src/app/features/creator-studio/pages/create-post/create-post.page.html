@@ -45,6 +45,7 @@
             fill="outline"
             (click)="generateCaption()"
             [disabled]="loadingCaption || !selectedFile"
+            style="--color: white"
           >
             <ion-spinner slot="start" *ngIf="loadingCaption"> </ion-spinner>
 

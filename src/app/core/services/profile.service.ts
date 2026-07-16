@@ -4,16 +4,15 @@ import { HttpClient } from '@angular/common/http';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
+import { map, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Portfolio } from '../../shared/interfaces/portfolio.interface';
-import { map } from 'rxjs';
+import { BrandProfile } from '../../features/profile/interfaces/brand-profile.interface';
 import {
   CreateInfluencerProfile,
   InfluencerProfile,
 } from '../../features/profile/interfaces/influencer-profile.interface';
-import { switchMap, tap } from 'rxjs';
+import { Portfolio } from '../../shared/interfaces/portfolio.interface';
 import { UploadService } from './upload.service';
-import { BrandProfile } from '../../features/profile/interfaces/brand-profile.interface';
 
 @Injectable({
   providedIn: 'root',
